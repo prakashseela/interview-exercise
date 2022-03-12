@@ -17,7 +17,7 @@ public class PriceClient implements PriceListener {
 
     @Override
     public void priceUpdate(String security, double price) {
-        if (stock.equalsIgnoreCase("ACME:EUR") && price < limit){
+        if (security.equalsIgnoreCase(stock) && price < limit){
             service.buy(security, price, 100);
         }
     }
