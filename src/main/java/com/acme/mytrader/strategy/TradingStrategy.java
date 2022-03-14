@@ -13,17 +13,20 @@ import java.util.concurrent.Executors;
  * that when they breach a trigger level orders can be executed automatically
  * </pre>
  */
-public class TradingStrategy implements Runnable {
-
-    private final PriceListener listener;
+public class TradingStrategy implements Runnable, PriceListener{
 
     private final String stock;
 
+    private final double limit;
+
+    private final ExecutionService service;
+
     private PriceSource priceSource;
 
-    public TradingStrategy(PriceListener listener, String stock) {
-        this.listener = listener;
+    public TradingStrategy(String stock, double limit, ExecutionService service) {
         this.stock = stock;
+        this.limit = limit;
+        this.service = service;
     }
 
     //server thread.
@@ -34,7 +37,14 @@ public class TradingStrategy implements Runnable {
             double newValue = 54.00;
             //monitor stock prices and update the listener,
             //if stock has moved out of range.
-            listener.priceUpdate(stock, newValue);
+            priceUpdate(stock, newValue);
+        }
+    }
+
+    @Override
+    public void priceUpdate(String security, double price) {
+        if (security.equalsIgnoreCase(stock) && price < limit){
+            service.buy(security, price, 100);
         }
     }
 
@@ -44,9 +54,9 @@ public class TradingStrategy implements Runnable {
         //Instantiate the class object from third party library.
         ExecutionService stockService = null;
         String stockName = "ACME:EUR";
-        PriceListener listener = new PriceClient(stockName, 55.0, stockService);
-        TradingStrategy stockServer = new TradingStrategy(listener, stockName);
+        double limit = 55.0;
+        //PriceListener listener = new PriceClient(stockName, limit, stockService);
+        TradingStrategy stockServer = new TradingStrategy(stockName, limit, stockService);
         executorService.submit(stockServer);
     }
-
 }
