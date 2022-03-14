@@ -22,7 +22,6 @@ public class StockServer implements Runnable {
             double newValue = 54.00;
             //monitor stock prices and update the listener,
             //if stock has moved out of range.
-
             listener.priceUpdate("ACME:EUR", newValue);
         }
     }

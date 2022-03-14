@@ -1,7 +1,6 @@
 package com.acme.mytrader.callback;
 
 import com.acme.mytrader.price.PriceListener;
-import com.acme.mytrader.price.PriceSource;
 
 import java.util.*;
 
