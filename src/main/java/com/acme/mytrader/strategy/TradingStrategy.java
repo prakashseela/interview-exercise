@@ -3,7 +3,11 @@ package com.acme.mytrader.strategy;
 import com.acme.mytrader.execution.ExecutionService;
 import com.acme.mytrader.price.PriceListener;
 import com.acme.mytrader.price.PriceSource;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -29,6 +33,8 @@ public class TradingStrategy implements Runnable, PriceListener{
 
     private PriceSource priceSource;
 
+    private static final Logger logger = LogManager.getLogger(TradingStrategy.class);
+
     public TradingStrategy(String stock, double limit, ExecutionService service) {
         this.stock = stock;
         this.limit = limit;
@@ -45,7 +51,13 @@ public class TradingStrategy implements Runnable, PriceListener{
             //if stock has moved out of range.
             try{
                 priceUpdate(stock, newValue);
+                logger.info("updated stock with new value.");
             }catch (Exception ex){
+                if (logger.isEnabled(Level.DEBUG)){
+                    logger.debug("unable to update the stock" + ex);
+                }else{
+                    logger.error("unable to update the stock" + ex);
+                }
                 throw new StockException("unable to update the stock");
             }
         }
