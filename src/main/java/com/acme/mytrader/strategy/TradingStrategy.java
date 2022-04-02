@@ -19,12 +19,6 @@ import java.util.concurrent.Executors;
  */
 public class TradingStrategy implements Runnable, PriceListener{
 
-    static class StockException extends RuntimeException {
-        public StockException(String message){
-            super(message);
-        }
-    }
-
     private final String stock;
 
     private final double limit;
@@ -67,6 +61,12 @@ public class TradingStrategy implements Runnable, PriceListener{
     public void priceUpdate(String security, double price) {
         if (security.equalsIgnoreCase(stock) && price < limit){
             service.buy(security, price, 100);
+        }
+    }
+
+    static class StockException extends RuntimeException {
+        public StockException(String message){
+            super(message);
         }
     }
 
