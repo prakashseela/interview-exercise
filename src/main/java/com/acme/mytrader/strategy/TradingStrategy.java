@@ -15,6 +15,12 @@ import java.util.concurrent.Executors;
  */
 public class TradingStrategy implements Runnable, PriceListener{
 
+    static class StockException extends RuntimeException {
+        public StockException(String message){
+            super(message);
+        }
+    }
+
     private final String stock;
 
     private final double limit;
@@ -37,7 +43,11 @@ public class TradingStrategy implements Runnable, PriceListener{
             double newValue = 54.00;
             //monitor stock prices and update the listener,
             //if stock has moved out of range.
-            priceUpdate(stock, newValue);
+            try{
+                priceUpdate(stock, newValue);
+            }catch (Exception ex){
+                throw new StockException("unable to update the stock");
+            }
         }
     }
 
